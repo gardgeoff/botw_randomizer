@@ -1,6 +1,6 @@
 const replace = require('replace-in-file');
 const fs = require('fs');
-
+const cmd = require('node-cmd');
 function getRandomInt(min, max) {
     min = Math.ceil(min);
     max = Math.floor(max);
@@ -115,20 +115,42 @@ let monList = [
     'Enemy_Wizzrobe_Fire_Senior',
     'Enemy_Wizzrobe_Ice',
     'Enemy_Wizzrobe_Ice_Senior'
-
-
 ]
+let cmdOptions = {
+    actions: {
+        compress: 'yml_to_byml',
+        decompress: 'byml_to_yml',
+    },
+    
+    fromUnmodified: './unmodified/',
+    toModified: './modified/',
+    mapTiles: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'],
+}
 
-//counter for indexing array
-let counter = 7;
+function runconsole(action,) {
+    cmd.runSync(
+        `byml_to_yml ./unmodified/D-6_Static.smubin ./D-6_Static.bin`
+    )
+
+}
+
+
+
+
+
+
+
+
+
+//counter for indexing monlist array
+let monListCounter = 0;
 //regexp that change based on array index
-let currentRegex = new RegExp(monList[counter]+'[^_]');
-console.log(currentRegex)
+let currentRegex = new RegExp(monList[monListCounter] + '[^_]');
 
-let currentMon = monList[counter];
+
+let currentMon = monList[monListCounter];
 let currentRandMon = monList[getRandomInt(0, monList.length - 1)] + '*'
 
-console.log(currentRegex.test('Enemy_Bokoblin_Guard_Junior'))
 const options = {
     files: './modified/D-6_Static.bin',
     from: currentRegex,
@@ -141,14 +163,14 @@ const options = {
 function checkFile() {
     fs.readFile('./modified/D-6_Static.bin', 'utf8', (err, data) => {
         if (currentRegex.test(data)) {
-            console.log(`found ${monList[counter]} changing to ${currentRandMon}`)
+            console.log(`found ${monList[monListCounter]} changing to ${currentRandMon}`)
 
             runReplace();
-        } else if (counter < monList.length -1) {
-            counter++;
-            currentRegex = new RegExp(monList[counter]+'[^_]');
+        } else if (monListCounter < monList.length - 1) {
+            monListCounter++;
+            currentRegex = new RegExp(monList[monListCounter] + '[^_]');
             options.from = currentRegex;
-            currentMon = monList[counter];
+            currentMon = monList[monListCounter];
             checkFile();
 
         } else {
@@ -164,13 +186,13 @@ function runReplace() {
     replace(options)
         .then(results => {
             console.log(results)
-            currentRandMon = monList[getRandomInt(0, monList.length - 1)]+"*";
+            currentRandMon = monList[getRandomInt(0, monList.length - 1)] + "*";
             options.to = currentRandMon
             checkFile();
-            
+
         })
         .catch(error => {
             console.error('Error occurred:', error);
         });
 }
-checkFile();
+// checkFile();
