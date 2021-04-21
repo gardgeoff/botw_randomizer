@@ -121,19 +121,59 @@ let cmdOptions = {
         compress: 'yml_to_byml',
         decompress: 'byml_to_yml',
     },
-    
-    fromUnmodified: './unmodified/',
-    toModified: './modified/',
-    mapTiles: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'],
+    directories: {
+        unModifiedDir: './unmodified/',
+        modifiedDir: './modified/',
+        stagingDir: './staging/'
+    },
 }
 
-function runconsole(action,) {
+let mapTiles = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J']
+//counter variable for mapTiles index
+currentFileLetterIndex = 0;
+currentFileLetter = mapTiles[currentFileLetterIndex]
+//counter variable for current map file number (1-8)
+currentFileNumber = 1;
+staticOrDynamic = "Static"
+smubinOrBin = "smubin"
+concatFileBin = `${currentFileLetter}-${currentFileNumber}_${staticOrDynamic}.bin`
+concatFilesmuBin = `${currentFileLetter}-${currentFileNumber}_${staticOrDynamic}.smubin`
+
+function runconsole(fileNameOne, fileNameTwo, action, currentDir, destDir) {
+    console.log('runnign command')
     cmd.runSync(
-        `byml_to_yml ./unmodified/D-6_Static.smubin ./D-6_Static.bin`
+        `${action} ${currentDir}${fileNameOne} ${destDir}${fileNameTwo}`
     )
-
 }
 
+
+function mainLoop() {
+    if(currentFileLetterIndex <= mapTiles.length){
+        if (currentFileNumber <= 8){
+            if (staticOrDynamic === "Static") {
+                console.log('hitting static')
+                runconsole(concatFilesmuBin, concatFileBin, cmdOptions.actions.decompress, cmdOptions.directories.unModifiedDir, cmdOptions.directories.stagingDir)
+                staticOrDynamic = "Dynamic";
+                concatFileBin = `${currentFileLetter}-${currentFileNumber}_${staticOrDynamic}.bin`
+                concatFilesmuBin = `${currentFileLetter}-${currentFileNumber}_${staticOrDynamic}.smubin`
+                
+            } else if (staticOrDynamic === "Dynamic") {
+               
+                runconsole(concatFilesmuBin, concatFileBin, cmdOptions.actions.decompress, cmdOptions.directories.unModifiedDir, cmdOptions.directories.stagingDir)
+                staticOrDynamic = "Static";
+                concatFileBin = `${currentFileLetter}-${currentFileNumber}_${staticOrDynamic}.bin`
+                concatFilesmuBin = `${currentFileLetter}-${currentFileNumber}_${staticOrDynamic}.smubin`
+                currentFileNumber++
+            }
+
+        } else if (currentFileNumber > 8) {
+
+        }
+        mainLoop();
+    }
+
+}
+mainLoop();
 
 
 
