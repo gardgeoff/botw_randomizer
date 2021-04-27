@@ -147,33 +147,46 @@ function runconsole(fileNameOne, fileNameTwo, action, currentDir, destDir) {
 }
 
 
-function mainLoop() {
-    if(currentFileLetterIndex <= mapTiles.length){
-        if (currentFileNumber <= 8){
-            if (staticOrDynamic === "Static") {
-                console.log('hitting static')
-                runconsole(concatFilesmuBin, concatFileBin, cmdOptions.actions.decompress, cmdOptions.directories.unModifiedDir, cmdOptions.directories.stagingDir)
-                staticOrDynamic = "Dynamic";
-                concatFileBin = `${currentFileLetter}-${currentFileNumber}_${staticOrDynamic}.bin`
-                concatFilesmuBin = `${currentFileLetter}-${currentFileNumber}_${staticOrDynamic}.smubin`
-                
-            } else if (staticOrDynamic === "Dynamic") {
+function mainLoop(decompress, randomize, compress) {
+    if (decompress) {
+        if (currentFileLetterIndex <= mapTiles.length) {
+            if (currentFileNumber <= 8) {
+                if (staticOrDynamic === "Static") {
+                    console.log('hitting static')
+                    runconsole(concatFilesmuBin, concatFileBin, cmdOptions.actions.decompress, cmdOptions.directories.unModifiedDir, cmdOptions.directories.stagingDir)
+                    staticOrDynamic = "Dynamic";
+                    concatFileBin = `${currentFileLetter}-${currentFileNumber}_${staticOrDynamic}.bin`
+                    concatFilesmuBin = `${currentFileLetter}-${currentFileNumber}_${staticOrDynamic}.smubin`
+
+                } else if (staticOrDynamic === "Dynamic") {
+
+                    runconsole(concatFilesmuBin, concatFileBin, cmdOptions.actions.decompress, cmdOptions.directories.unModifiedDir, cmdOptions.directories.stagingDir)
+                    staticOrDynamic = "Static";
+                    concatFileBin = `${currentFileLetter}-${currentFileNumber}_${staticOrDynamic}.bin`
+                    concatFilesmuBin = `${currentFileLetter}-${currentFileNumber}_${staticOrDynamic}.smubin`
+                    currentFileNumber++
+                }
+
+            } else if (currentFileNumber > 8) {
+                console.log('more than 8')
                
-                runconsole(concatFilesmuBin, concatFileBin, cmdOptions.actions.decompress, cmdOptions.directories.unModifiedDir, cmdOptions.directories.stagingDir)
-                staticOrDynamic = "Static";
+                currentFileLetterIndex++;
+                currentFileNumber = 0;
+                currentFileLetter = mapTiles[currentFileLetterIndex]
                 concatFileBin = `${currentFileLetter}-${currentFileNumber}_${staticOrDynamic}.bin`
                 concatFilesmuBin = `${currentFileLetter}-${currentFileNumber}_${staticOrDynamic}.smubin`
-                currentFileNumber++
+
+
             }
 
-        } else if (currentFileNumber > 8) {
-
         }
-        mainLoop();
+    } else if (randomize) {
+        
     }
+    mainLoop(true);
 
 }
-mainLoop();
+mainLoop(true);
 
 
 
