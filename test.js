@@ -148,6 +148,8 @@ function runconsole(fileNameOne, fileNameTwo, action, currentDir, destDir) {
 
 
 function mainLoop(decompress, randomize, compress) {
+    concatFileBin = `${currentFileLetter}-${currentFileNumber}_${staticOrDynamic}.bin`
+    concatFilesmuBin = `${currentFileLetter}-${currentFileNumber}_${staticOrDynamic}.smubin`
     if (decompress) {
         if (currentFileLetterIndex <= mapTiles.length) {
             if (currentFileNumber <= 8) {
@@ -155,15 +157,11 @@ function mainLoop(decompress, randomize, compress) {
                     console.log('hitting static')
                     runconsole(concatFilesmuBin, concatFileBin, cmdOptions.actions.decompress, cmdOptions.directories.unModifiedDir, cmdOptions.directories.stagingDir)
                     staticOrDynamic = "Dynamic";
-                    concatFileBin = `${currentFileLetter}-${currentFileNumber}_${staticOrDynamic}.bin`
-                    concatFilesmuBin = `${currentFileLetter}-${currentFileNumber}_${staticOrDynamic}.smubin`
 
                 } else if (staticOrDynamic === "Dynamic") {
 
                     runconsole(concatFilesmuBin, concatFileBin, cmdOptions.actions.decompress, cmdOptions.directories.unModifiedDir, cmdOptions.directories.stagingDir)
                     staticOrDynamic = "Static";
-                    concatFileBin = `${currentFileLetter}-${currentFileNumber}_${staticOrDynamic}.bin`
-                    concatFilesmuBin = `${currentFileLetter}-${currentFileNumber}_${staticOrDynamic}.smubin`
                     currentFileNumber++
                 }
 
