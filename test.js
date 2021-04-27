@@ -1,6 +1,7 @@
 const replace = require('replace-in-file');
 const fs = require('fs');
 const cmd = require('node-cmd');
+
 function getRandomInt(min, max) {
     min = Math.ceil(min);
     max = Math.floor(max);
@@ -130,67 +131,14 @@ let cmdOptions = {
 
 let mapTiles = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J']
 //counter variable for mapTiles index
-currentFileLetterIndex = 0;
-currentFileLetter = mapTiles[currentFileLetterIndex]
+let currentFileLetterIndex = 0;
+let currentFileLetter = mapTiles[currentFileLetterIndex]
 //counter variable for current map file number (1-8)
-currentFileNumber = 1;
-staticOrDynamic = "Static"
-smubinOrBin = "smubin"
-concatFileBin = `${currentFileLetter}-${currentFileNumber}_${staticOrDynamic}.bin`
-concatFilesmuBin = `${currentFileLetter}-${currentFileNumber}_${staticOrDynamic}.smubin`
-
-function runconsole(fileNameOne, fileNameTwo, action, currentDir, destDir) {
-    console.log('runnign command')
-    cmd.runSync(
-        `${action} ${currentDir}${fileNameOne} ${destDir}${fileNameTwo}`
-    )
-}
-
-
-function mainLoop(decompress, randomize, compress) {
-    concatFileBin = `${currentFileLetter}-${currentFileNumber}_${staticOrDynamic}.bin`
-    concatFilesmuBin = `${currentFileLetter}-${currentFileNumber}_${staticOrDynamic}.smubin`
-    if (decompress) {
-        if (currentFileLetterIndex <= mapTiles.length) {
-            if (currentFileNumber <= 8) {
-                if (staticOrDynamic === "Static") {
-                    console.log('hitting static')
-                    runconsole(concatFilesmuBin, concatFileBin, cmdOptions.actions.decompress, cmdOptions.directories.unModifiedDir, cmdOptions.directories.stagingDir)
-                    staticOrDynamic = "Dynamic";
-
-                } else if (staticOrDynamic === "Dynamic") {
-
-                    runconsole(concatFilesmuBin, concatFileBin, cmdOptions.actions.decompress, cmdOptions.directories.unModifiedDir, cmdOptions.directories.stagingDir)
-                    staticOrDynamic = "Static";
-                    currentFileNumber++
-                }
-
-            } else if (currentFileNumber > 8) {
-                console.log('more than 8')
-               
-                currentFileLetterIndex++;
-                currentFileNumber = 0;
-                currentFileLetter = mapTiles[currentFileLetterIndex]
-                concatFileBin = `${currentFileLetter}-${currentFileNumber}_${staticOrDynamic}.bin`
-                concatFilesmuBin = `${currentFileLetter}-${currentFileNumber}_${staticOrDynamic}.smubin`
-
-
-            }
-
-        }
-    } else if (randomize) {
-        
-    }
-    mainLoop(true);
-
-}
-mainLoop(true);
-
-
-
-
-
-
+let currentFileNumber = 1;
+let staticOrDynamic = "Static"
+let smubinOrBin = "smubin"
+let concatFileBin = `${currentFileLetter}-${currentFileNumber}_${staticOrDynamic}.bin`
+let concatFilesmuBin = `${currentFileLetter}-${currentFileNumber}_${staticOrDynamic}.smubin`
 
 
 //counter for indexing monlist array
@@ -202,17 +150,36 @@ let currentRegex = new RegExp(monList[monListCounter] + '[^_]');
 let currentMon = monList[monListCounter];
 let currentRandMon = monList[getRandomInt(0, monList.length - 1)] + '*'
 
+//options for find and replace 
 const options = {
-    files: './modified/D-6_Static.bin',
+    files: `./staging/${concatFileBin}`,
     from: currentRegex,
     to: currentRandMon
 }
+
+
+//function for running console commands
+function runconsole(fileNameOne, fileNameTwo, action, currentDir, destDir) {
+    console.log('running command')
+    cmd.runSync(
+        `${action} ${currentDir}${fileNameOne} ${destDir}${fileNameTwo}`
+    )
+}
+
 //checkfile() looks through the file for first case of variable "currentRegex"
 //If it finds an isntance it executes runReplace() 
 //If not it increases the array counter variable, reasigns the value of current Regex to the current index of monlist, and reruns the function
 //If counter > monlist length the loop will end
+
 function checkFile() {
-    fs.readFile('./modified/D-6_Static.bin', 'utf8', (err, data) => {
+    fs.readFile(`./staging/A-1_Static.bin`, 'utf8', (err, data) => {
+        if(err) {
+            console.log(err);
+        }
+        console.log(data)
+
+
+
         if (currentRegex.test(data)) {
             console.log(`found ${monList[monListCounter]} changing to ${currentRandMon}`)
 
@@ -246,4 +213,49 @@ function runReplace() {
             console.error('Error occurred:', error);
         });
 }
-// checkFile();
+
+let state = "decompress"
+let pauseCounter = 0;
+//the main program logic executes within this loop depending on what state is
+function mainLoop() {
+
+
+    concatFileBin = `${currentFileLetter}-${currentFileNumber}_${staticOrDynamic}.bin`
+    concatFilesmuBin = `${currentFileLetter}-${currentFileNumber}_${staticOrDynamic}.smubin`
+    if (state === "decompress") {
+        if (currentFileLetterIndex <= mapTiles.length) {
+            if (currentFileNumber <= 8) {
+                if (staticOrDynamic === "Static") {
+                    console.log(`decompressing ${concatFilesmuBin}`)
+                    runconsole(concatFilesmuBin, concatFileBin, cmdOptions.actions.decompress, cmdOptions.directories.unModifiedDir, cmdOptions.directories.stagingDir)
+                    staticOrDynamic = "Dynamic";
+                } else if (staticOrDynamic === "Dynamic") {
+                    console.log(`decompressing ${concatFilesmuBin}`)
+                    runconsole(concatFilesmuBin, concatFileBin, cmdOptions.actions.decompress, cmdOptions.directories.unModifiedDir, cmdOptions.directories.stagingDir)
+                    staticOrDynamic = "Static";
+                    currentFileNumber++
+                }
+            } else if (currentFileNumber > 8) {
+                console.log('End of this tile series. Moving to next letter.')
+                currentFileLetterIndex++;
+                currentFileNumber = 1;
+                currentFileLetter = mapTiles[currentFileLetterIndex]
+                concatFileBin = `${currentFileLetter}-${currentFileNumber}_${staticOrDynamic}.bin`
+                concatFilesmuBin = `${currentFileLetter}-${currentFileNumber}_${staticOrDynamic}.smubin`
+            }
+        }
+
+        state = 'randomize'
+    } else if (state === "randomize") {
+       
+     checkFile();
+
+    } else {
+        return
+    }
+    mainLoop();
+
+
+}
+// mainLoop();
+mainLoop();
