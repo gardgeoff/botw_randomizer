@@ -124,14 +124,14 @@ let cmdOptions = {
     },
     directories: {
         unModifiedDir: './unmodified/',
-        modifiedDir: './modified/',
+        modifiedDir: './modified/aoc/0010/Map/MainField/',
         stagingDir: './staging/'
     },
 }
 //stores file paths for randomizing
-
+let fileArr = [];
 let mapTiles = ['A', 'B'];
-// , 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'
+// , 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'
 //counter variable for mapTiles index
 let currentFileLetterIndex = 0;
 let currentFileLetter = mapTiles[currentFileLetterIndex];
@@ -156,6 +156,12 @@ const options = {
     from: currentRegex,
     to: currentRandMon
 }
+const removeAst = {
+    files: fileArr,
+    from: /[*]/g,
+    to: ""
+}
+
 
 
 //function for running decompression or compression on the command line
@@ -165,7 +171,11 @@ function boxGhost(fileNameOne, fileNameTwo, action, currentDir, destDir) {
         `${action} ${currentDir}${fileNameOne} ${destDir}${fileNameTwo}`
     )
 }
+function makeDir() {
+    cmd.runSync('createfolders.bat')
 
+}
+makeDir();
 //checkfile() looks through the file for first case of variable "currentRegex"
 //If it finds an isntance it executes runReplace() 
 //If not it increases the array counter variable, reasigns the value of current Regex to the current index of monlist, and reruns the function
@@ -219,7 +229,8 @@ function runReplace() {
 
 let pauseCounter = 0;
 
-//the main program logic executes within this loop depending on what state is
+
+//decompress all .smubin files in unmodified folder
 function decompress() {
 
     concatFileBin = `${currentFileLetter}-${currentFileNumber}_${staticOrDynamic}.bin`
@@ -229,6 +240,7 @@ function decompress() {
         if (currentFileNumber <= 8) {
             console.log(`decompressing ${concatFilesmuBin}`)
             boxGhost(concatFilesmuBin, concatFileBin, cmdOptions.actions.decompress, cmdOptions.directories.unModifiedDir, cmdOptions.directories.stagingDir)
+            fileArr.push(`./staging/${concatFileBin}`);
             if (staticOrDynamic === "Static") {
                 staticOrDynamic = "Dynamic";
             } else if (staticOrDynamic === "Dynamic") {
@@ -244,12 +256,11 @@ function decompress() {
             currentFileLetter = mapTiles[currentFileLetterIndex]
             concatFileBin = `${currentFileLetter}-${currentFileNumber}_${staticOrDynamic}.bin`
             concatFilesmuBin = `${currentFileLetter}-${currentFileNumber}_${staticOrDynamic}.smubin`
-  
+
         }
 
     } else {
         pauseCounter++
-        console.log(pauseCounter)
         if (pauseCounter > 5000) {
             //returning variables to default values
             currentFileLetterIndex = 0;
@@ -269,8 +280,6 @@ function decompress() {
 function randomize() {
 
     if (currentFileLetterIndex <= mapTiles.length - 1) {
-        console.log('why are you calling here go away')
-
         if (currentFileNumber <= 8) {
             console.log(`randomizing ${concatFileBin}`)
             checkFile();
@@ -281,17 +290,59 @@ function randomize() {
                 currentFileNumber++;
             }
         } else if (currentFileNumber > 8) {
-            console.log('!!!!!!End of this tile series. Moving to next letter.')
+            console.log('End of this tile series. Moving to next letter.')
             currentFileLetterIndex++;
             currentFileNumber = 1;
             currentFileLetter = mapTiles[currentFileLetterIndex]
             concatFileBin = `${currentFileLetter}-${currentFileNumber}_${staticOrDynamic}.bin`
-            staticOrDynamic = "Static"
             randomize();
         }
     } else {
-        console.log('all done randomizing!')
-        return
+        console.log('all done randomizing! Removing asterisks')
+        replace(removeAst)
+            .then(results => {
+                console.log(results)
+            })
+            .catch(err => {
+                console.log(`error occured with replacing asterisks: ${err}`)
+            })
+        currentFileLetterIndex = 0;
+        currentFileLetter = mapTiles[currentFileLetterIndex]
+        currentFileNumber = 1;
+        staticOrDynamic = "Static"
+        concatFileBin = `${currentFileLetter}-${currentFileNumber}_${staticOrDynamic}.bin`
+        concatFilesmuBin = `${currentFileLetter}-${currentFileNumber}_${staticOrDynamic}.smubin`
+        compress();
     }
 }
-decompress();
+function compress() {
+    concatFileBin = `${currentFileLetter}-${currentFileNumber}_${staticOrDynamic}.bin`
+    concatFilesmuBin = `${currentFileLetter}-${currentFileNumber}_${staticOrDynamic}.smubin`
+
+    if (currentFileLetterIndex <= mapTiles.length - 1) {
+        if (currentFileNumber <= 8) {
+            console.log(`comrpessing ${concatFileBin}`)
+            boxGhost(concatFileBin, concatFilesmuBin, cmdOptions.actions.compress, cmdOptions.directories.stagingDir, `${cmdOptions.directories.modifiedDir}${currentFileLetter}-${currentFileNumber}/`)
+
+            if (staticOrDynamic === "Static") {
+                staticOrDynamic = "Dynamic";
+            } else if (staticOrDynamic === "Dynamic") {
+                staticOrDynamic = "Static";
+                currentFileNumber++;
+            }
+
+        } else if (currentFileNumber > 8) {
+            staticOrDynamic = "Static"
+            console.log('End of this tile series. Moving to next letter.')
+            currentFileLetterIndex++;
+            currentFileNumber = 1;
+            currentFileLetter = mapTiles[currentFileLetterIndex]
+            concatFileBin = `${currentFileLetter}-${currentFileNumber}_${staticOrDynamic}.bin`
+            concatFilesmuBin = `${currentFileLetter}-${currentFileNumber}_${staticOrDynamic}.smubin`
+        }
+    } else {
+        console.log('done compressing')
+        return
+    }
+    compress()
+}
