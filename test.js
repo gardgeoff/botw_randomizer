@@ -130,7 +130,7 @@ let cmdOptions = {
 }
 //stores file paths for randomizing
 
-let mapTiles = ['A'];
+let mapTiles = ['A', 'B'];
 // , 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'
 //counter variable for mapTiles index
 let currentFileLetterIndex = 0;
@@ -172,8 +172,10 @@ function boxGhost(fileNameOne, fileNameTwo, action, currentDir, destDir) {
 //If counter > monlist length the loop will end
 
 function checkFile() {
-    options.files = `./staging/${concatFileBin}`
-    concatFileBin = `${currentFileLetter}-${currentFileNumber}_${staticOrDynamic}.bin`
+    if (currentFileNumber < 9) {
+        options.files = `./staging/${concatFileBin}`
+        concatFileBin = `${currentFileLetter}-${currentFileNumber}_${staticOrDynamic}.bin`
+    }
     fs.readFile(`./staging/${concatFileBin}`, 'utf8', (err, data) => {
 
         if (err) {
@@ -194,6 +196,7 @@ function checkFile() {
             monListCounter = 0;
             console.log('no more to change');
             randomize();
+
         }
     })
 }
@@ -218,6 +221,7 @@ let pauseCounter = 0;
 
 //the main program logic executes within this loop depending on what state is
 function decompress() {
+
     concatFileBin = `${currentFileLetter}-${currentFileNumber}_${staticOrDynamic}.bin`
     concatFilesmuBin = `${currentFileLetter}-${currentFileNumber}_${staticOrDynamic}.smubin`
 
@@ -233,12 +237,14 @@ function decompress() {
             }
 
         } else if (currentFileNumber > 8) {
+            staticOrDynamic = "Static"
             console.log('End of this tile series. Moving to next letter.')
             currentFileLetterIndex++;
             currentFileNumber = 1;
             currentFileLetter = mapTiles[currentFileLetterIndex]
             concatFileBin = `${currentFileLetter}-${currentFileNumber}_${staticOrDynamic}.bin`
             concatFilesmuBin = `${currentFileLetter}-${currentFileNumber}_${staticOrDynamic}.smubin`
+  
         }
 
     } else {
@@ -261,6 +267,7 @@ function decompress() {
     decompress();
 }
 function randomize() {
+
     if (currentFileLetterIndex <= mapTiles.length - 1) {
         console.log('why are you calling here go away')
 
@@ -273,20 +280,18 @@ function randomize() {
                 staticOrDynamic = "Static";
                 currentFileNumber++;
             }
-
         } else if (currentFileNumber > 8) {
             console.log('!!!!!!End of this tile series. Moving to next letter.')
             currentFileLetterIndex++;
             currentFileNumber = 1;
             currentFileLetter = mapTiles[currentFileLetterIndex]
             concatFileBin = `${currentFileLetter}-${currentFileNumber}_${staticOrDynamic}.bin`
+            staticOrDynamic = "Static"
+            randomize();
         }
-
     } else {
         console.log('all done randomizing!')
         return
     }
-
 }
-
 decompress();
