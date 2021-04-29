@@ -2,11 +2,6 @@ const replace = require('replace-in-file');
 const fs = require('fs');
 const cmd = require('node-cmd');
 
-function getRandomInt(min, max) {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-}
 let monList = [
     'Enemy_Assassin_Azito_Middle',
     'Enemy_Assassin_Middle',
@@ -117,6 +112,29 @@ let monList = [
     'Enemy_Wizzrobe_Ice',
     'Enemy_Wizzrobe_Ice_Senior'
 ]
+
+//probably don't need this
+let pauseCounter = 0;
+//stores file paths for randomizing
+let fileArr = [];
+//
+let mapTiles = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J' ];
+//counter variable for mapTiles index
+let currentFileLetterIndex = 0;
+let currentFileLetter = mapTiles[currentFileLetterIndex];
+//counter variable for current map file number (1-8)
+let currentFileNumber = 1;
+let staticOrDynamic = "Static";
+let concatFileBin = `${currentFileLetter}-${currentFileNumber}_${staticOrDynamic}.bin`;
+let concatFilesmuBin = `${currentFileLetter}-${currentFileNumber}_${staticOrDynamic}.smubin`;
+//counter for indexing monlist array
+let monListCounter = 0;
+//regexp that change based on array index
+let currentRegex = new RegExp(monList[monListCounter] + '[^_]');
+let currentMon = monList[monListCounter];
+let currentRandMon = monList[getRandomInt(0, monList.length - 1)] + '*'
+
+//object to help keep track of actions and directories used on cmd
 let cmdOptions = {
     actions: {
         compress: 'yml_to_byml',
@@ -128,67 +146,46 @@ let cmdOptions = {
         stagingDir: './staging/'
     },
 }
-//stores file paths for randomizing
-let fileArr = [];
-let mapTiles = ['D'];
-
-//, 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J' 
-//counter variable for mapTiles index
-let currentFileLetterIndex = 0;
-let currentFileLetter = mapTiles[currentFileLetterIndex];
-//counter variable for current map file number (1-8)
-let currentFileNumber = 1;
-let staticOrDynamic = "Static";
-let concatFileBin = `${currentFileLetter}-${currentFileNumber}_${staticOrDynamic}.bin`;
-let concatFilesmuBin = `${currentFileLetter}-${currentFileNumber}_${staticOrDynamic}.smubin`;
-
-//counter for indexing monlist array
-let monListCounter = 0;
-//regexp that change based on array index
-let currentRegex = new RegExp(monList[monListCounter] + '[^_]');
-
-
-let currentMon = monList[monListCounter];
-let currentRandMon = monList[getRandomInt(0, monList.length - 1)] + '*'
-
-//options for find and replace 
+//both objects passed in as function parameters for find and replace
+//This one is used for randomization
 const options = {
     files: `./staging/${concatFileBin}`,
     from: currentRegex,
     to: currentRandMon
 }
+//This one is used for removing asterisks after randomization
 const removeAst = {
     files: fileArr,
     from: /\*/g,
     to: ""
 }
 
-
-
+//basic function for getting random number
+function getRandomInt(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
 //function for running decompression or compression on the command line
 function boxGhost(fileNameOne, fileNameTwo, action, currentDir, destDir) {
     cmd.runSync(
         `${action} ${currentDir}${fileNameOne} ${destDir}${fileNameTwo}`
     )
 }
+//creates ending mod directory structure with a bat file
 function makeDir() {
     cmd.runSync('createfolders.bat')
-
 }
-makeDir();
-// makeDir();
 //checkfile() looks through the file for first case of variable "currentRegex"
-//If it finds an isntance it executes runReplace() 
+//If it finds an instance it executes runReplace() 
 //If not it increases the array counter variable, reasigns the value of current Regex to the current index of monlist, and reruns the function
 //If counter > monlist length the loop will end
-
 function checkFile() {
     if (currentFileNumber < 9) {
         concatFileBin = `${currentFileLetter}-${currentFileNumber}_${staticOrDynamic}.bin`
         options.files = `./staging/${concatFileBin}`
     }
     fs.readFile(`./staging/${concatFileBin}`, 'utf8', (err, data) => {
-
         if (err) {
             console.log(err);
         }
@@ -210,8 +207,6 @@ function checkFile() {
             monListCounter = 0;
             console.log('no more to change');
             randomize()
-     
-
         }
     })
 }
@@ -231,16 +226,10 @@ function runReplace() {
             console.error('Error occurred:', error);
         });
 }
-
-let pauseCounter = 0;
-
-
-//decompress all .smubin files in unmodified folder
+//decompress all .smubin files in unmodified folder and moves them to staging folder
 function decompress() {
-
     concatFileBin = `${currentFileLetter}-${currentFileNumber}_${staticOrDynamic}.bin`
     concatFilesmuBin = `${currentFileLetter}-${currentFileNumber}_${staticOrDynamic}.smubin`
-
     if (currentFileLetterIndex <= mapTiles.length - 1) {
         if (currentFileNumber <= 8) {
             console.log(`decompressing ${concatFilesmuBin}`)
@@ -252,7 +241,6 @@ function decompress() {
                 staticOrDynamic = "Static";
                 currentFileNumber++;
             }
-
         } else if (currentFileNumber > 8) {
             staticOrDynamic = "Static"
             console.log('End of this tile series. Moving to next letter.')
@@ -261,9 +249,7 @@ function decompress() {
             currentFileLetter = mapTiles[currentFileLetterIndex]
             concatFileBin = `${currentFileLetter}-${currentFileNumber}_${staticOrDynamic}.bin`
             concatFilesmuBin = `${currentFileLetter}-${currentFileNumber}_${staticOrDynamic}.smubin`
-
         }
-
     } else {
         pauseCounter++
         if (pauseCounter > 5000) {
@@ -274,10 +260,8 @@ function decompress() {
             staticOrDynamic = "Static"
             concatFileBin = `${currentFileLetter}-${currentFileNumber}_${staticOrDynamic}.bin`
             concatFilesmuBin = `${currentFileLetter}-${currentFileNumber}_${staticOrDynamic}.smubin`
-            //add the randomize loop function !!!
             console.log('done!')
             randomize()
-            console.log(fileArr)
             return
         }
     }
@@ -313,27 +297,22 @@ function randomize() {
         staticOrDynamic = "Static"
         concatFileBin = `${currentFileLetter}-${currentFileNumber}_${staticOrDynamic}.bin`
         concatFilesmuBin = `${currentFileLetter}-${currentFileNumber}_${staticOrDynamic}.smubin`
-  
         return
-
     }
 }
 function compress() {
     concatFileBin = `${currentFileLetter}-${currentFileNumber}_${staticOrDynamic}.bin`
     concatFilesmuBin = `${currentFileLetter}-${currentFileNumber}_${staticOrDynamic}.smubin`
-
     if (currentFileLetterIndex <= mapTiles.length - 1) {
         if (currentFileNumber <= 8) {
             console.log(`comrpessing ${concatFileBin}`)
             boxGhost(concatFileBin, concatFilesmuBin, cmdOptions.actions.compress, cmdOptions.directories.stagingDir, `${cmdOptions.directories.modifiedDir}${currentFileLetter}-${currentFileNumber}/`)
-
             if (staticOrDynamic === "Static") {
                 staticOrDynamic = "Dynamic";
             } else if (staticOrDynamic === "Dynamic") {
                 staticOrDynamic = "Static";
                 currentFileNumber++;
             }
-
         } else if (currentFileNumber > 8) {
             staticOrDynamic = "Static"
             console.log('End of this tile series. Moving to next letter.')
@@ -349,4 +328,5 @@ function compress() {
     }
     compress()
 }
-compress();
+// makeDir();
+compress()
