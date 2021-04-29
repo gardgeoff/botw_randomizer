@@ -1,3 +1,4 @@
+window.$ = window.jQuery = require('jquery');
 const replace = require('replace-in-file');
 const fs = require('fs');
 const cmd = require('node-cmd');
@@ -329,4 +330,7 @@ function compress() {
     compress()
 }
 // makeDir();
-compress()
+// compress()
+$('.decompress').on('click', () =>{
+    makeDir();
+})
