@@ -5,8 +5,10 @@
   "main": "main.js",
   "dependencies": {
     "jquery": "^3.6.0",
+    "js-yaml": "^4.1.0",
     "node-cmd": "^4.0.0",
-    "replace-in-file": "^6.2.0"
+    "replace-in-file": "^6.2.0",
+    "yamljs": "^0.3.0"
   },
   "devDependencies": {
     "electron": "^12.0.5"
