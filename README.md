@@ -1,3 +1,3 @@
 # botw_randomizer
 ## **Currently Under Contruction!**
-![construction image](https://media.giphy.com/media/B8UsGFOWimbUk/giphy.gif)
+![construction image](https://media.giphy.com/media/Nx85vtTY70T3W/giphy.gif)
