@@ -1,28 +1,30 @@
 <!DOCTYPE html>
 <html>
-
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
     <title>Hello World!</title>
-    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="script-src 'self' 'unsafe-inline';"
+    />
     <script src="jquery.js"></script>
-    <link rel="stylesheet" href="../css/index.css">
+    <link rel="stylesheet" href="../css/index.css" />
+  </head>
 
-</head>
-
-<body>
+  <body>
     <div class="container">
-        <div class="reset">
-            <h1>Welcome to the Botw Randomizer</h1>
-            <input id="dir" type="file" webkitdirectory>
-            <button class="currDir">What directory</button>
-            <button class="decompress">decompress</button>
+      <header><h1>Legend of Zelda Breath of the Wild Randomizer</h1></header>
+
+      <div class="sub-container">
+        <div class="buttons">
             <button class="randomize">randomize</button>
-            <button class="compress">compress</button>
-            <h1><span class='completed-files'>0</span>/160 files completed</h1>
-            <script src="../../test.js"></script>
+        </div>
+        <div class="loading">
+            <h2>Loading <br />
+            This May Take Some Time</h2>
+            <div class=" lds-dual-ring"></div>
         </div>
     </div>
-</body>
-
+    <script src="../../test.js"></script>
+  </body>
 </html>
