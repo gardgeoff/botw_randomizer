@@ -1,12 +1,15 @@
+
 window.$ = window.jQuery = require("jquery");
 const replace = require("replace-in-file");
 const fs = require("fs");
 const cmd = require("node-cmd");
+
 yaml = require("js-yaml");
 let monList = [
-  // 'Enemy_Assassin_Azito_Middle',
-  // 'Enemy_Assassin_Middle',
-  // 'Enemy_Assassin_Shooter_Junior',
+  "Enemy_Assassin_Azito_Middle",
+  // "Enemy_Assassin_Junior",
+  // "Enemy_Assassin_Middle",
+  // "Enemy_Assassin_Shooter_Junior",
   "Enemy_Bokoblin_Bone_Junior_AllDay",
   "Enemy_Bokoblin_Guard_Junior",
   "Enemy_Bokoblin_Guard_Middle",
@@ -92,6 +95,9 @@ let monList = [
   "Enemy_Wizzrobe_Ice",
 ];
 let monListMelee = [
+  "Enemy_Assassin_Azito_Middle",
+  "Enemy_Assassin_Junior",
+  "Enemy_Assassin_Middle",
   "Enemy_Bokoblin_Bone_Junior_AllDay",
   "Enemy_Bokoblin_Guard_Junior",
   "Enemy_Bokoblin_Guard_Middle",
@@ -121,11 +127,6 @@ let monListMelee = [
   "Enemy_Lizalfos_Junior_Guard_Ambush",
   "Enemy_Lizalfos_Middle",
   "Enemy_Lizalfos_Senior",
-  "Enemy_Lynel_Dark",
-  "Enemy_Lynel_Junior",
-  "Enemy_Lynel_Junior_Mountain",
-  "Enemy_Lynel_Middle",
-  "Enemy_Lynel_Senior",
   "Enemy_Moriblin_Dark",
   "Enemy_Moriblin_Junior",
   "Enemy_Moriblin_Middle",
@@ -152,6 +153,13 @@ let monListRanged = [
   "Enemy_Lizalfos_Junior_Guard_Ambush",
   "Enemy_Lizalfos_Middle",
   "Enemy_Lizalfos_Senior",
+];
+let monListLynel = [
+  "Enemy_Lynel_Dark",
+  "Enemy_Lynel_Junior",
+  "Enemy_Lynel_Junior_Mountain",
+  "Enemy_Lynel_Middle",
+  "Enemy_Lynel_Senior",
 ];
 let mWeaponList = [
   //LSWORDS
@@ -314,6 +322,15 @@ rWeaponList = [
   "Weapon_Bow_072",
   "Weapon_Bow_074",
 ];
+let weaponRods = [
+  "Weapon_Sword_060",
+  "Weapon_Sword_061",
+  "Weapon_Sword_062",
+  "Weapon_Sword_048",
+  "Weapon_Sword_049",
+  "Weapon_Sword_050"
+
+]
 shieldList = [
   "Weapon_Shield_001",
   "Weapon_Shield_002",
@@ -348,14 +365,14 @@ shieldList = [
   "Weapon_Shield_041",
   "Weapon_Shield_042",
 ];
-
+let totalWeapons = mWeaponList.concat(rWeaponList, shieldList);
 let completedFiles = 0;
 //probably don't need this
 let pauseCounter = 0;
 //stores file paths for randomizing
 let fileArr = [];
-//"A", 'B', 'C', , 'E', 'F', 'G', 'H', 'I', 'J'
-let mapTiles = ["D"];
+//, "B", "C", "D", "E", "F", "G", "H", "I", "J"
+let mapTiles = ["A"];
 //counter variable for mapTiles index
 let currentFileLetterIndex = 0;
 let currentFileLetter = mapTiles[currentFileLetterIndex];
@@ -407,6 +424,14 @@ function makeDir() {
 function writeDoc(file) {
   console.log(file);
   let doc = yaml.load(fs.readFileSync(file, "utf8"));
+
+  doc.Objs.forEach((element) => {
+    if (monList.includes(element.UnitConfigName)) {
+      console.log("randomizing mons");
+      element.UnitConfigName = monList[getRandomInt(0, monList.length - 1)];
+
+    }
+  });
   doc.Objs.forEach((element) => {
     if (
       monListMelee.includes(element.UnitConfigName) &&
@@ -415,9 +440,13 @@ function writeDoc(file) {
       if (getRandomInt(1, 2) == 1) {
         element["!Parameters"].EquipItem1 =
           mWeaponList[getRandomInt(0, mWeaponList.length - 1)];
+        if (getRandomInt(1, 2) == 1) {
+          element["!Parameters"].EquipItem2 =
+            shieldList[getRandomInt(0, shieldList.length - 1)];
+        }
       } else {
         element["!Parameters"].EquipItem1 =
-          rWeaponList[getRandomInt(0, mWeaponList.length - 1)];
+          rWeaponList[getRandomInt(0, rWeaponList.length - 1)];
       }
     } else if (monListMelee.includes(element.UnitConfigName)) {
       element["!Parameters"].EquipItem1 =
@@ -425,11 +454,40 @@ function writeDoc(file) {
     } else if (monListRanged.includes(element.UnitConfigName))
       element["!Parameters"].EquipItem1 =
         rWeaponList[getRandomInt(0, mWeaponList.length - 1)];
-  });
-  doc.Objs.forEach((element) => {
-    if (monList.includes(element.UnitConfigName)) {
-      console.log("randomizing mons");
-      element.UnitConfigName = monList[getRandomInt(0, monList.length - 1)];
+    // if (element.UnitConfigName === "Enemy_Assassin_Shooter_Junior") {
+    //   element["!Parameters"].EquipItem1 = "Weapon_Bow_040";
+    // }
+    // if (element.UnitConfigName === "Enemy_Assassin_Junior") {
+    //   element["!Parameters"].EquipItem1 = "Weapon_Sword_053";
+    // }
+    if (
+      element.UnitConfigName === "Enemy_Giant_Junior" ||
+      element.UnitConfigName === "Enemy_Giant_Middle" ||
+      element.UnitConfigName === "Enemy_Giant_Senior"
+    ) {
+      element["!Parameters"].EquipItem1 =
+        totalWeapons[getRandomInt(0, totalWeapons.length - 1)];
+      element["!Parameters"].EquipItem2 =
+        totalWeapons[getRandomInt(0, totalWeapons.length - 1)];
+      element["!Parameters"].EquipItem3 =
+        totalWeapons[getRandomInt(0, totalWeapons.length - 1)];
+    }
+    if (monListLynel.includes(element.UnitConfigName)) {
+      element["!Parameters"].EquipItem1 =
+        mWeaponList[getRandomInt(0, mWeaponList.length - 1)];
+      element["!Parameters"].EquipItem2 =
+        shieldList[getRandomInt(0, shieldList.length - 1)];
+      element["!Parameters"].EquipItem3 =
+        rWeaponList[getRandomInt(0, rWeaponList.length - 1)];
+    }
+    if (
+      element.UnitConfigName === "Enemy_Wizzrobe_Electric" ||
+      element.UnitConfigName === "Enemy_Wizzrobe_Fire" ||
+      element.UnitConfigName === "Enemy_Wizzrobe_Ice"
+    ) {
+      element["!Parameters"].EquipItem1 =
+        weaponRods[getRandomInt(0, weaponRods.length - 1)];
+
     }
   });
   fs.writeFile(file, yaml.dump(doc), (err) => {
@@ -451,6 +509,8 @@ function decompress() {
   concatFilesmuBin = `${currentFileLetter}-${currentFileNumber}_${staticOrDynamic}.smubin`;
   if (currentFileLetterIndex <= mapTiles.length - 1) {
     if (currentFileNumber <= 8) {
+      completedFiles++;
+      $(".completed-files").html(completedFiles);
       console.log(`decompressing ${concatFilesmuBin}`);
       boxGhost(
         concatFilesmuBin,
@@ -476,9 +536,8 @@ function decompress() {
       concatFilesmuBin = `${currentFileLetter}-${currentFileNumber}_${staticOrDynamic}.smubin`;
     }
   } else {
-    pauseCounter++;
-    if (pauseCounter > 5000) {
       //returning variables to default values
+      completedFiles = 0;
       currentFileLetterIndex = 0;
       currentFileLetter = mapTiles[currentFileLetterIndex];
       currentFileNumber = 1;
@@ -495,8 +554,9 @@ function decompress() {
       });
 
       return;
-    }
+    
   }
+
   decompress();
 }
 
@@ -514,8 +574,7 @@ function randomize() {
       randomize();
     }
   } else {
-    console.log("all done randomizing! Removing asterisks");
-
+    completedFiles = 0;
     replaceOpt.from = /42069/g;
     replaceOpt.to = 0;
     replace(replaceOpt).then(() => {
@@ -530,8 +589,6 @@ function randomize() {
     staticOrDynamic = "Static";
     concatFileBin = `${currentFileLetter}-${currentFileNumber}_${staticOrDynamic}.yml`;
     concatFilesmuBin = `${currentFileLetter}-${currentFileNumber}_${staticOrDynamic}.smubin`;
-    alert("done!");
-    $(".state").html("Ready");
     return;
   }
 }
@@ -565,24 +622,38 @@ function compress() {
     }
   } else {
     console.log("done compressing have a nice day!");
+    $('.loading').fadeOut('fast')
     return;
   }
+  completedFiles++;
+  $(".completed-files").html(completedFiles);
   compress();
 }
-// makeDir();
-// compress()
+
 $(".currDir").on("click", () => {
   window.postMessage({
     type: "select-dirs",
   });
 });
 $(".decompress").on("click", () => {
+  $('.decompress').fadeOut('fast');
+  $('.loading').fadeIn('fast');
+
+ setTimeout(() => {
   makeDir();
   decompress();
+  setTimeout(() =>{
+    randomize();
+    setTimeout(() =>{
+      compress();
+    }, 500)
+  }, 500)
+
+
+
+ }, 500)
 });
-$(".randomize").on("click", () => {
-  randomize();
-});
-$(".compress").on("click", () => {
-  compress();
-});
+$(".test-btn").on("click", () =>{
+  $('.buttons').css('display','none');
+  $('.loading').css('display', 'inline-block');
+})

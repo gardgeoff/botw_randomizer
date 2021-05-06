@@ -4,6 +4,7 @@
   "description": "",
   "main": "main.js",
   "dependencies": {
+    "custom-electron-titlebar": "^3.2.6",
     "jquery": "^3.6.0",
     "js-yaml": "^4.1.0",
     "node-cmd": "^4.0.0",
