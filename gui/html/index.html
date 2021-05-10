@@ -16,15 +16,19 @@
       <header><h1>Legend of Zelda Breath of the Wild Randomizer</h1></header>
 
       <div class="sub-container">
+
         <div class="buttons">
+            <label class="custom-input">Select Mainfield<input id="choose-folder" type="file" webkitdirectory></label>
+            <button id="submit-folder">Copy Folders</button>
+            <button class="decompress">decompress</button>
             <button class="randomize">randomize</button>
+            <button class="compress">compress</button>
         </div>
         <div class="loading">
-            <h2>Loading <br />
-            This May Take Some Time</h2>
+            <h2>Loading</h2>
             <div class=" lds-dual-ring"></div>
         </div>
     </div>
-    <script src="../../test.js"></script>
+    <script src="../../logic.js"></script>
   </body>
 </html>

@@ -1,0 +1,1 @@
+xcopy /S /E /exclude:excludedfilelist.txt "C:\Wii U Games\The Legend of Zelda Breath of the Wild (DLC) (2.182 GB) (USA) (unpacked)\content\0010\Map\MainField\" .\unmodified
