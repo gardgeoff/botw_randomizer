@@ -4,9 +4,10 @@ const fs = require("fs");
 const cmd = require("node-cmd");
 yaml = require("js-yaml");
 let monList = [
-  // 'Enemy_Assassin_Azito_Middle',
-  // 'Enemy_Assassin_Middle',
-  // 'Enemy_Assassin_Shooter_Junior',
+  "Enemy_Assassin_Azito_Middle",
+  // "Enemy_Assassin_Junior",
+  // "Enemy_Assassin_Middle",
+  // "Enemy_Assassin_Shooter_Junior",
   "Enemy_Bokoblin_Bone_Junior_AllDay",
   "Enemy_Bokoblin_Guard_Junior",
   "Enemy_Bokoblin_Guard_Middle",
@@ -92,6 +93,9 @@ let monList = [
   "Enemy_Wizzrobe_Ice",
 ];
 let monListMelee = [
+  "Enemy_Assassin_Azito_Middle",
+  "Enemy_Assassin_Junior",
+  "Enemy_Assassin_Middle",
   "Enemy_Bokoblin_Bone_Junior_AllDay",
   "Enemy_Bokoblin_Guard_Junior",
   "Enemy_Bokoblin_Guard_Middle",
@@ -121,11 +125,6 @@ let monListMelee = [
   "Enemy_Lizalfos_Junior_Guard_Ambush",
   "Enemy_Lizalfos_Middle",
   "Enemy_Lizalfos_Senior",
-  "Enemy_Lynel_Dark",
-  "Enemy_Lynel_Junior",
-  "Enemy_Lynel_Junior_Mountain",
-  "Enemy_Lynel_Middle",
-  "Enemy_Lynel_Senior",
   "Enemy_Moriblin_Dark",
   "Enemy_Moriblin_Junior",
   "Enemy_Moriblin_Middle",
@@ -152,6 +151,13 @@ let monListRanged = [
   "Enemy_Lizalfos_Junior_Guard_Ambush",
   "Enemy_Lizalfos_Middle",
   "Enemy_Lizalfos_Senior",
+];
+let monListLynel = [
+  "Enemy_Lynel_Dark",
+  "Enemy_Lynel_Junior",
+  "Enemy_Lynel_Junior_Mountain",
+  "Enemy_Lynel_Middle",
+  "Enemy_Lynel_Senior",
 ];
 let mWeaponList = [
   //LSWORDS
@@ -314,6 +320,14 @@ rWeaponList = [
   "Weapon_Bow_072",
   "Weapon_Bow_074",
 ];
+let weaponRods = [
+  "Weapon_Sword_060",
+  "Weapon_Sword_061",
+  "Weapon_Sword_062",
+  "Weapon_Sword_048",
+  "Weapon_Sword_049",
+  "Weapon_Sword_050",
+];
 shieldList = [
   "Weapon_Shield_001",
   "Weapon_Shield_002",
@@ -348,14 +362,308 @@ shieldList = [
   "Weapon_Shield_041",
   "Weapon_Shield_042",
 ];
-
+let chestTypes = [
+  "TBox_Field_Enemy",
+  "TBox_Field_Iron",
+  "TBox_Field_Stone",
+  "TBox_Field_Wood",
+];
+let armors = [
+  "Armor_001_Head",
+  "Armor_001_Lower",
+  "Armor_001_Upper",
+  "Armor_005_Head",
+  "Armor_005_Lower",
+  "Armor_005_Upper",
+  "Armor_006_Head",
+  "Armor_006_Lower",
+  "Armor_006_Upper",
+  "Armor_008_Head",
+  "Armor_008_Lower",
+  "Armor_008_Upper",
+  "Armor_009_Head",
+  "Armor_009_Lower",
+  "Armor_009_Upper",
+  "Armor_011_Head",
+  "Armor_011_Lower",
+  "Armor_011_Upper",
+  "Armor_012_Head",
+  "Armor_012_Lower",
+  "Armor_012_Upper",
+  "Armor_014_Head",
+  "Armor_014_Lower",
+  "Armor_014_Upper",
+  "Armor_017_Head",
+  "Armor_017_Lower",
+  "Armor_017_Upper",
+  "Armor_020_Head",
+  "Armor_020_Lower",
+  "Armor_020_Upper",
+  "Armor_021_Head",
+  "Armor_021_Lower",
+  "Armor_021_Upper",
+  "Armor_022_Head",
+  "Armor_024_Head",
+  "Armor_025_Head",
+  "Armor_026_Head",
+  "Armor_027_Head",
+  "Armor_028_Head",
+  "Armor_029_Head",
+  "Armor_044_Upper",
+  "Armor_046_Head",
+  "Armor_046_Lower",
+  "Armor_046_Upper",
+  "Armor_048_Head",
+  "Armor_048_Lower",
+  "Armor_048_Upper",
+  "Armor_049_Lower",
+  "Armor_053_Head",
+  "Armor_053_Lower",
+  "Armor_053_Upper",
+  "Armor_055_Head",
+  "Armor_056_Head",
+  "Armor_160_Head",
+  "Armor_160_Lower",
+  "Armor_160_Upper",
+  "Armor_200_Head",
+  "Armor_200_Lower",
+  "Armor_200_Upper",
+  "Armor_205_Head",
+  "Armor_205_Lower",
+  "Armor_205_Upper",
+  "Armor_210_Head",
+  "Armor_210_Lower",
+  "Armor_210_Upper",
+  "Armor_215_Head",
+  "Armor_215_Lower",
+  "Armor_215_Upper",
+  "Armor_220_Head",
+  "Armor_225_Head",
+  "Armor_225_Lower",
+  "Armor_225_Upper",
+  "Armor_230_Head",
+  "Armor_230_Lower",
+  "Armor_230_Upper",
+  "Armor_215_Head",
+  "Armor_215_Lower",
+  "Armor_215_Upper",
+];
+let items = [
+  "Animal_Insect_A",
+  "Animal_Insect_AA",
+  "Animal_Insect_AB",
+  "Animal_Insect_B",
+  "Animal_Insect_C",
+  "Animal_Insect_E",
+  "Animal_Insect_F",
+  "Animal_Insect_G",
+  "Animal_Insect_H",
+  "Animal_Insect_I",
+  "Animal_Insect_K",
+  "Animal_Insect_M",
+  "Animal_Insect_N",
+  "Animal_Insect_O",
+  "Animal_Insect_P",
+  "Animal_Insect_Q",
+  "Animal_Insect_R",
+  "Animal_Insect_S",
+  "Animal_Insect_T",
+  "Animal_Insect_X",
+  "Animal_Insect_Z",
+  "Obj_BombArrow_A_01",
+  "Obj_BombArrow_A_02",
+  "Obj_BombArrow_A_03",
+  "Obj_BombArrow_A_04",
+  "Obj_ArrowBundle_A_01",
+  "Obj_ArrowBundle_A_02",
+  "Obj_ArrowNormal_A_01",
+  "Obj_ElectricArrow_A_01",
+  "Obj_ElectricArrow_A_02",
+  "Obj_ElectricArrow_A_03",
+  "Obj_IceArrow_A_01",
+  "Obj_IceArrow_A_02",
+  "Obj_IceArrow_A_03",
+  "Obj_AncientArrow_A_01",
+  "Obj_AncientArrow_B_01",
+  "Obj_AncientArrow_C_01",
+  "Item_Enemy_00",
+  "Item_Enemy_01",
+  "Item_Enemy_02",
+  "Item_Enemy_03",
+  "Item_Enemy_04",
+  "Item_Enemy_05",
+  "Item_Enemy_06",
+  "Item_Enemy_07",
+  "Item_Enemy_08",
+  "Item_Enemy_12",
+  "Item_Enemy_13",
+  "Item_Enemy_14",
+  "Item_Enemy_15",
+  "Item_Enemy_16",
+  "Item_Enemy_17",
+  "Item_Enemy_18",
+  "Item_Enemy_19",
+  "Item_Enemy_20",
+  "Item_Enemy_21",
+  "Item_Enemy_24",
+  "Item_Enemy_25",
+  "Item_Enemy_26",
+  "Item_Enemy_27",
+  "Item_Enemy_28",
+  "Item_Enemy_29",
+  "Item_Enemy_30",
+  "Item_Enemy_31",
+  "Item_Enemy_32",
+  "Item_Enemy_33",
+  "Item_Enemy_34",
+  "Item_Enemy_38",
+  "Item_Enemy_39",
+  "Item_Enemy_40",
+  "Item_Enemy_41",
+  "Item_Enemy_42",
+  "Item_Enemy_43",
+  "Item_Enemy_44",
+  "Item_Enemy_45",
+  "Item_Enemy_46",
+  "Item_Enemy_47",
+  "Item_Enemy_48",
+  "Item_Enemy_49",
+  "Item_Enemy_50",
+  "Item_Enemy_51",
+  "Item_Enemy_52",
+  "Item_Enemy_53",
+  "Item_Enemy_54",
+  "Item_Enemy_55",
+  "Item_Enemy_56",
+  "Item_Enemy_57",
+  "Item_Enemy_Put_57",
+  "Item_FishGet_A",
+  "Item_FishGet_B",
+  "Item_FishGet_C",
+  "Item_FishGet_D",
+  "Item_FishGet_E",
+  "Item_FishGet_F",
+  "Item_FishGet_G",
+  "Item_FishGet_H",
+  "Item_FishGet_I",
+  "Item_FishGet_J",
+  "Item_FishGet_K",
+  "Item_FishGet_L",
+  "Item_FishGet_L_00",
+  "Item_FishGet_M",
+  "Item_FishGet_X",
+  "Item_FishGet_Z",
+  "Item_Fruit_A",
+  "Item_Fruit_B",
+  "Item_Fruit_C",
+  "Item_Fruit_D",
+  "Item_Fruit_E",
+  "Item_Fruit_E_00",
+  "Item_Fruit_F",
+  "Item_Fruit_G",
+  "Item_Fruit_H",
+  "Item_Fruit_I",
+  "Item_Fruit_J",
+  "Item_Fruit_K",
+  "Item_Fruit_L",
+  "Item_HeartUtuwa",
+  "Item_InsectGet_K",
+  "Item_InsectGet_O",
+  "Item_InsectGet_Z",
+  "Item_Material_01",
+  "Item_Material_02",
+  "Item_Material_03",
+  "Item_Material_04",
+  "Item_Material_05",
+  "Item_Material_05_00",
+  "Item_Material_06",
+  "Item_Material_07",
+  "Item_Material_08",
+  "Item_Meat_01",
+  "Item_Meat_02",
+  "Item_Meat_06",
+  "Item_Meat_07",
+  "Item_Meat_11",
+  "Item_Meat_12",
+  "Item_MushroomGet_D",
+  "Item_Mushroom_A",
+  "Item_Mushroom_B",
+  "Item_Mushroom_C",
+  "Item_Mushroom_D",
+  "Item_Mushroom_E",
+  "Item_Mushroom_F",
+  "Item_Mushroom_F_00",
+  "Item_Mushroom_H",
+  "Item_Mushroom_J",
+  "Item_Mushroom_L",
+  "Item_Mushroom_M",
+  "Item_Mushroom_N",
+  "Item_Mushroom_N_00",
+  "Item_Mushroom_O",
+  "Item_Ore_A",
+  "Item_Ore_A_00",
+  "Item_Ore_B",
+  "Item_Ore_C",
+  "Item_Ore_D",
+  "Item_Ore_E",
+  "Item_Ore_F",
+  "Item_Ore_G",
+  "Item_Ore_H",
+  "Item_Ore_I",
+  "Item_Ore_J",
+  "Item_Parastole2",
+  "Item_PlantGet_A",
+  "Item_PlantGet_B",
+  "Item_PlantGet_C",
+  "Item_PlantGet_E",
+  "Item_PlantGet_F",
+  "Item_PlantGet_G",
+  "Item_PlantGet_H",
+  "Item_PlantGet_I",
+  "Item_PlantGet_J",
+  "Item_PlantGet_L",
+  "Item_PlantGet_M",
+  "Item_PlantGet_O",
+  "Item_PlantGet_Q",
+  "Item_Plant_A",
+  "Item_Plant_B",
+  "Item_Plant_C",
+  "Item_Plant_E",
+  "Item_Plant_F",
+  "Item_Plant_G",
+  "Item_Plant_H",
+  "Item_Plant_I",
+  "Item_Plant_J",
+  "Item_Plant_L",
+  "Item_Plant_M",
+  "Item_Plant_O",
+  "Item_Plant_Q",
+  "Animal_Fish_A",
+  "Animal_Fish_B",
+  "Animal_Fish_C",
+  "Animal_Fish_D",
+  "Animal_Fish_E",
+  "Animal_Fish_F",
+  "Animal_Fish_G",
+  "Animal_Fish_H",
+  "Animal_Fish_I",
+  "Animal_Fish_J",
+  "Animal_Fish_K",
+  "Animal_Fish_L",
+  "Animal_Fish_M",
+  "Animal_Fish_X",
+  "Animal_Fish_Z",
+];
+let armorChance = 10;
+let copyDirectory;
+let totalWeapons = mWeaponList.concat(rWeaponList);
 let completedFiles = 0;
 //probably don't need this
 let pauseCounter = 0;
 //stores file paths for randomizing
 let fileArr = [];
-//"A", 'B', 'C', , 'E', 'F', 'G', 'H', 'I', 'J'
-let mapTiles = ["D"];
+//, "B", "C", "D", "E", "F", "G", "H", "I", "J"
+let mapTiles = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
 //counter variable for mapTiles index
 let currentFileLetterIndex = 0;
 let currentFileLetter = mapTiles[currentFileLetterIndex];
@@ -407,6 +715,27 @@ function makeDir() {
 function writeDoc(file) {
   console.log(file);
   let doc = yaml.load(fs.readFileSync(file, "utf8"));
+  console.log(doc);
+
+  doc.Objs.forEach((element) => {
+    if (monList.includes(element.UnitConfigName)) {
+      console.log("randomizing mons");
+      element.UnitConfigName = monList[getRandomInt(0, monList.length - 1)];
+    }
+    if(chestTypes.includes(element.UnitConfigName)){
+      if (getRandomInt(1, armorChance) === 1){
+        console.log("armor spawned!")
+        let randIndex = getRandomInt(1, armors.length -1)
+        element["!Parameters"].DropActor = armors[randIndex];
+        armors.splice(randIndex, 1);
+        armorChance = 10;
+
+      } else {
+        element["!Parameters"].DropActor = items[getRandomInt(1, items.length - 1)]
+        armorChance --;
+      }
+    }
+  });
   doc.Objs.forEach((element) => {
     if (
       monListMelee.includes(element.UnitConfigName) &&
@@ -415,9 +744,13 @@ function writeDoc(file) {
       if (getRandomInt(1, 2) == 1) {
         element["!Parameters"].EquipItem1 =
           mWeaponList[getRandomInt(0, mWeaponList.length - 1)];
+        if (getRandomInt(1, 2) == 1) {
+          element["!Parameters"].EquipItem2 =
+            shieldList[getRandomInt(0, shieldList.length - 1)];
+        }
       } else {
         element["!Parameters"].EquipItem1 =
-          rWeaponList[getRandomInt(0, mWeaponList.length - 1)];
+          rWeaponList[getRandomInt(0, rWeaponList.length - 1)];
       }
     } else if (monListMelee.includes(element.UnitConfigName)) {
       element["!Parameters"].EquipItem1 =
@@ -425,11 +758,39 @@ function writeDoc(file) {
     } else if (monListRanged.includes(element.UnitConfigName))
       element["!Parameters"].EquipItem1 =
         rWeaponList[getRandomInt(0, mWeaponList.length - 1)];
-  });
-  doc.Objs.forEach((element) => {
-    if (monList.includes(element.UnitConfigName)) {
-      console.log("randomizing mons");
-      element.UnitConfigName = monList[getRandomInt(0, monList.length - 1)];
+    // if (element.UnitConfigName === "Enemy_Assassin_Shooter_Junior") {
+    //   element["!Parameters"].EquipItem1 = "Weapon_Bow_040";
+    // }
+    // if (element.UnitConfigName === "Enemy_Assassin_Junior") {
+    //   element["!Parameters"].EquipItem1 = "Weapon_Sword_053";
+    // }
+    if (
+      element.UnitConfigName === "Enemy_Giant_Junior" ||
+      element.UnitConfigName === "Enemy_Giant_Middle" ||
+      element.UnitConfigName === "Enemy_Giant_Senior"
+    ) {
+      element["!Parameters"].EquipItem1 =
+        totalWeapons[getRandomInt(0, totalWeapons.length - 1)];
+      element["!Parameters"].EquipItem2 =
+        totalWeapons[getRandomInt(0, totalWeapons.length - 1)];
+      element["!Parameters"].EquipItem3 =
+        totalWeapons[getRandomInt(0, totalWeapons.length - 1)];
+    }
+    if (monListLynel.includes(element.UnitConfigName)) {
+      element["!Parameters"].EquipItem1 =
+        mWeaponList[getRandomInt(0, mWeaponList.length - 1)];
+      element["!Parameters"].EquipItem2 =
+        shieldList[getRandomInt(0, shieldList.length - 1)];
+      element["!Parameters"].EquipItem3 =
+        rWeaponList[getRandomInt(0, rWeaponList.length - 1)];
+    }
+    if (
+      element.UnitConfigName === "Enemy_Wizzrobe_Electric" ||
+      element.UnitConfigName === "Enemy_Wizzrobe_Fire" ||
+      element.UnitConfigName === "Enemy_Wizzrobe_Ice"
+    ) {
+      element["!Parameters"].EquipItem1 =
+        weaponRods[getRandomInt(0, weaponRods.length - 1)];
     }
   });
   fs.writeFile(file, yaml.dump(doc), (err) => {
@@ -451,12 +812,14 @@ function decompress() {
   concatFilesmuBin = `${currentFileLetter}-${currentFileNumber}_${staticOrDynamic}.smubin`;
   if (currentFileLetterIndex <= mapTiles.length - 1) {
     if (currentFileNumber <= 8) {
+      completedFiles++;
+      $(".completed-files").html(completedFiles);
       console.log(`decompressing ${concatFilesmuBin}`);
       boxGhost(
         concatFilesmuBin,
         concatFileBin,
         cmdOptions.actions.decompress,
-        cmdOptions.directories.unModifiedDir,
+        `${cmdOptions.directories.unModifiedDir}${currentFileLetter}-${currentFileNumber}/`,
         cmdOptions.directories.stagingDir
       );
       fileArr.push(`./staging/${concatFileBin}`);
@@ -476,27 +839,31 @@ function decompress() {
       concatFilesmuBin = `${currentFileLetter}-${currentFileNumber}_${staticOrDynamic}.smubin`;
     }
   } else {
-    pauseCounter++;
-    if (pauseCounter > 5000) {
-      //returning variables to default values
-      currentFileLetterIndex = 0;
-      currentFileLetter = mapTiles[currentFileLetterIndex];
-      currentFileNumber = 1;
-      staticOrDynamic = "Static";
-      concatFileBin = `${currentFileLetter}-${currentFileNumber}_${staticOrDynamic}.yml`;
-      concatFilesmuBin = `${currentFileLetter}-${currentFileNumber}_${staticOrDynamic}.smubin`;
-      console.log("done!");
-      replaceOpt.from = /!u/g;
-      replaceOpt.to = "u";
-      replace(replaceOpt).then(() => {
-        replaceOpt.from = /\.0/g;
-        replaceOpt.to = ".42069";
-        replace(replaceOpt);
-      });
+    //returning variables to default values
+    completedFiles = 0;
+    console.log(fileArr);
+    currentFileLetterIndex = 0;
+    currentFileLetter = mapTiles[currentFileLetterIndex];
+    currentFileNumber = 1;
+    staticOrDynamic = "Static";
+    concatFileBin = `${currentFileLetter}-${currentFileNumber}_${staticOrDynamic}.yml`;
+    concatFilesmuBin = `${currentFileLetter}-${currentFileNumber}_${staticOrDynamic}.smubin`;
+    console.log("done!");
+    replaceOpt.from = /!u/g;
+    replaceOpt.to = "u";
+    replace(replaceOpt).then(() => {
+      replaceOpt.from = /\.0/g;
+      replaceOpt.to = ".42069";
+      replace(replaceOpt);
+    });
+    $(".loading").fadeOut("fast", () => {
+      $(".randomize").fadeIn("fast");
+    });
 
-      return;
-    }
+
+    return;
   }
+
   decompress();
 }
 
@@ -514,8 +881,8 @@ function randomize() {
       randomize();
     }
   } else {
-    console.log("all done randomizing! Removing asterisks");
-
+    console.log(armors.length);
+    completedFiles = 0;
     replaceOpt.from = /42069/g;
     replaceOpt.to = 0;
     replace(replaceOpt).then(() => {
@@ -530,8 +897,10 @@ function randomize() {
     staticOrDynamic = "Static";
     concatFileBin = `${currentFileLetter}-${currentFileNumber}_${staticOrDynamic}.yml`;
     concatFilesmuBin = `${currentFileLetter}-${currentFileNumber}_${staticOrDynamic}.smubin`;
-    alert("done!");
-    $(".state").html("Ready");
+    $(".loading").fadeOut("fast", () => {
+      $(".compress").fadeIn("fast");
+    });
+
     return;
   }
 }
@@ -540,7 +909,7 @@ function compress() {
   concatFilesmuBin = `${currentFileLetter}-${currentFileNumber}_${staticOrDynamic}.smubin`;
   if (currentFileLetterIndex <= mapTiles.length - 1) {
     if (currentFileNumber <= 8) {
-      console.log(`comrpessing ${concatFileBin}`);
+      console.log(`compressing ${concatFileBin}`);
       boxGhost(
         concatFileBin,
         concatFilesmuBin,
@@ -564,25 +933,86 @@ function compress() {
       concatFilesmuBin = `${currentFileLetter}-${currentFileNumber}_${staticOrDynamic}.smubin`;
     }
   } else {
+    cmd.runSync(
+      'botw_flag_util generate ./modified -r 1 0 -b -v'
+    )
     console.log("done compressing have a nice day!");
+    $(".loading").fadeOut("fast");
+    alert("Done! have a nice day!");
     return;
   }
   compress();
 }
-// makeDir();
-// compress()
+
+// cmd.runSync(
+//   "deletefolders.bat"
+// )
+makeDir();
+
 $(".currDir").on("click", () => {
   window.postMessage({
     type: "select-dirs",
   });
 });
+// $(".randomize").on("click", () => {
+//   $(".randomize").fadeOut("fast");
+//
+
+//   setTimeout(() => {
+//     decompress();
+//     setTimeout(() => {
+//       randomize();
+//       setTimeout(() => {
+//         compress();
+//       }, 500);
+//     }, 500);
+//   }, 500);
+// });
 $(".decompress").on("click", () => {
-  makeDir();
-  decompress();
+  $(".decompress").fadeOut("fast");
+  $(".loading").fadeIn("fast");
+  setTimeout(function () {
+    decompress();
+  }, 500);
 });
 $(".randomize").on("click", () => {
-  randomize();
+  $(".randomize").fadeOut("fast");
+  $(".loading").fadeIn("fast");
+  setTimeout(function () {
+    randomize();
+  }, 500);
 });
+
 $(".compress").on("click", () => {
-  compress();
+  $(".compress").fadeOut("fast");
+  $(".loading").fadeIn("fast");
+  setTimeout(function () {
+    compress();
+  }, 500);
 });
+$("#choose-folder").on("change", () => {
+  let directory = document.getElementById("choose-folder").files[0].path;
+  let regex1 = /LazyTraverseList.smubin/;
+  directory = directory.replace(regex1, "");
+  console.log(directory);
+  if (directory.includes("Map\\MainField\\")) {
+    copyDirectory = `xcopy /S /E /exclude:excludedfilelist.txt "${directory}" .\\unmodified`;
+    $(".custom-input").fadeOut("fast");
+    $("#submit-folder").fadeIn("fast");
+  } else {
+    alert("bad directory");
+  }
+});
+$("#submit-folder").on("click", function () {
+  $(".loading").fadeIn("fast");
+  $("#submit-folder").fadeOut("fast");
+  fs.writeFile("copyfolders.bat", copyDirectory, function (err) {
+    console.log("copied");
+    cmd.runSync("copyfolders.bat");
+  });
+  setTimeout(function () {
+    $(".loading").fadeOut("fast");
+    $(".decompress").fadeIn("fast");
+  }, 2000);
+});
+console.log(armors.length);
