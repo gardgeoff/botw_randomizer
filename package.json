@@ -5,6 +5,7 @@
   "main": "main.js",
   "dependencies": {
     "custom-electron-titlebar": "^3.2.6",
+    "electron-squirrel-startup": "^1.0.0",
     "jquery": "^3.6.0",
     "js-yaml": "^4.1.0",
     "node-cmd": "^4.0.0",
@@ -13,10 +14,17 @@
     "yamljs": "^0.3.0"
   },
   "devDependencies": {
+    "@electron-forge/cli": "^6.0.0-beta.54",
+    "@electron-forge/maker-deb": "^6.0.0-beta.54",
+    "@electron-forge/maker-rpm": "^6.0.0-beta.54",
+    "@electron-forge/maker-squirrel": "^6.0.0-beta.54",
+    "@electron-forge/maker-zip": "^6.0.0-beta.54",
     "electron": "^12.0.5"
   },
   "scripts": {
-    "start": "electron ."
+    "start": "electron-forge start",
+    "package": "electron-forge package",
+    "make": "electron-forge make"
   },
   "repository": {
     "type": "git",
@@ -28,5 +36,32 @@
   "bugs": {
     "url": "https://github.com/gardgeoff/botw_randomizer/issues"
   },
-  "homepage": "https://github.com/gardgeoff/botw_randomizer#readme"
+  "homepage": "https://github.com/gardgeoff/botw_randomizer#readme",
+  "config": {
+    "forge": {
+      "packagerConfig": {},
+      "makers": [
+        {
+          "name": "@electron-forge/maker-squirrel",
+          "config": {
+            "name": "botw_randomizer"
+          }
+        },
+        {
+          "name": "@electron-forge/maker-zip",
+          "platforms": [
+            "darwin"
+          ]
+        },
+        {
+          "name": "@electron-forge/maker-deb",
+          "config": {}
+        },
+        {
+          "name": "@electron-forge/maker-rpm",
+          "config": {}
+        }
+      ]
+    }
+  }
 }

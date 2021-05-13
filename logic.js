@@ -611,7 +611,6 @@ let items = [
   "Item_Ore_H",
   "Item_Ore_I",
   "Item_Ore_J",
-  "Item_Parastole2",
   "Item_PlantGet_A",
   "Item_PlantGet_B",
   "Item_PlantGet_C",
@@ -654,15 +653,17 @@ let items = [
   "Animal_Fish_X",
   "Animal_Fish_Z",
 ];
+
 let armorChance = 10;
 let copyDirectory;
 let totalWeapons = mWeaponList.concat(rWeaponList);
+let totalItems = items.concat(totalWeapons);
 let completedFiles = 0;
 //probably don't need this
 let pauseCounter = 0;
 //stores file paths for randomizing
 let fileArr = [];
-//, "B", "C", "D", "E", "F", "G", "H", "I", "J"
+//, 
 let mapTiles = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
 //counter variable for mapTiles index
 let currentFileLetterIndex = 0;
@@ -725,13 +726,13 @@ function writeDoc(file) {
     if(chestTypes.includes(element.UnitConfigName)){
       if (getRandomInt(1, armorChance) === 1){
         console.log("armor spawned!")
-        let randIndex = getRandomInt(1, armors.length -1)
+        let randIndex = getRandomInt(0, armors.length -1)
         element["!Parameters"].DropActor = armors[randIndex];
         armors.splice(randIndex, 1);
         armorChance = 10;
 
       } else {
-        element["!Parameters"].DropActor = items[getRandomInt(1, items.length - 1)]
+        element["!Parameters"].DropActor = totalItems[getRandomInt(1, totalItems.length - 1)]
         armorChance --;
       }
     }
@@ -758,12 +759,6 @@ function writeDoc(file) {
     } else if (monListRanged.includes(element.UnitConfigName))
       element["!Parameters"].EquipItem1 =
         rWeaponList[getRandomInt(0, mWeaponList.length - 1)];
-    // if (element.UnitConfigName === "Enemy_Assassin_Shooter_Junior") {
-    //   element["!Parameters"].EquipItem1 = "Weapon_Bow_040";
-    // }
-    // if (element.UnitConfigName === "Enemy_Assassin_Junior") {
-    //   element["!Parameters"].EquipItem1 = "Weapon_Sword_053";
-    // }
     if (
       element.UnitConfigName === "Enemy_Giant_Junior" ||
       element.UnitConfigName === "Enemy_Giant_Middle" ||
@@ -933,21 +928,21 @@ function compress() {
       concatFilesmuBin = `${currentFileLetter}-${currentFileNumber}_${staticOrDynamic}.smubin`;
     }
   } else {
-    cmd.runSync(
-      'botw_flag_util generate ./modified -r 1 0 -b -v'
-    )
+
     console.log("done compressing have a nice day!");
     $(".loading").fadeOut("fast");
-    alert("Done! have a nice day!");
+    $(".add-flags").fadeIn("fast");
     return;
   }
   compress();
 }
 
-// cmd.runSync(
-//   "deletefolders.bat"
-// )
-makeDir();
+cmd.run(
+  "deletefolders.bat", function(){
+    makeDir();
+  }
+)
+
 
 $(".currDir").on("click", () => {
   window.postMessage({
@@ -990,6 +985,13 @@ $(".compress").on("click", () => {
     compress();
   }, 500);
 });
+$(".add-flags").on("click", () => {
+  $(".add-flags").fadeOut("fast");
+  $(".loading").fadeIn("fast");
+  setTimeout(function() {
+    cmd.runSync("botw_flag_util generate modified -a -r 0 -1 -b -v")
+  },500)
+})
 $("#choose-folder").on("change", () => {
   let directory = document.getElementById("choose-folder").files[0].path;
   let regex1 = /LazyTraverseList.smubin/;

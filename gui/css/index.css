@@ -217,6 +217,9 @@ button:hover{
 .compress{
   display:none;
 }
+.add-flags{
+  display:none;
+}
 #submit-folder{
   display:none;
 }
